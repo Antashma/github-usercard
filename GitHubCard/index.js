@@ -5,64 +5,6 @@ import axios from 'axios';
     https://api.github.com/users/<your name>
 */
 
-axios.get('https://api.github.com/users/antashma')
-  .then(
-    (success) => {
-      console.log('axios github user request successful!', success)
-      const gitUser = success.data;
-      function cardMaker(data) {
-        // ELEMENTS
-        const cardDiv = document.createElement('div');
-        //append below to cardDiv
-        const cardImg = document.createElement('img');
-        const cardInfo = document.createElement('div')
-        //append below to cardInfo
-        const cardName = document.createElement('h3')
-        const cardUsername = document.createElement('p')
-        const cardLocation = document.createElement('p')
-        const cardProfile = document.createElement('p')
-        const cardURL = document.createElement('a') //append this to cardProfile
-        const cardFollowers = document.createElement('p')
-        const cardFollowing = document.createElement('p')
-        const cardBio = document.createElement('p')
-        
-        //APPEND
-        const cardDivChildren = [cardImg, cardInfo]
-        const cardInfoChildren = [
-          cardName, cardUsername, cardLocation, cardProfile, cardFollowers, cardFollowing, cardBio
-        ]
-
-        cardProfile.appendChild(cardURL)
-        cardInfoChildren.forEach(el => cardInfo.appendChild(el))
-        cardDivChildren.forEach(el => cardDiv.appendChild(el))
-
-        //CLASSES
-        cardDiv.classList.add('card')
-        cardInfo.classList.add('card-info')
-        cardName.classList.add('name')
-        cardUsername.classList.add('username')
-      
-        //CONTENT
-        cardImg.src = data.avatar_url
-        cardUsername.textContent = data.login
-        cardName.textContent = data.cardName
-        cardLocation.textContent = data.location
-        cardURL.textContent = data.html_url
-        cardURL.href = data.html_url
-        cardFollowers.textContent = data.followers + ' followers'
-        cardFollowing.textContent = data.following + ' following'
-        cardBio.textContent = data.bio
-
-        return cardDiv;
-      }
-      document.querySelector('.cards').appendChild(cardMaker(gitUser))
-      
-    })
-  .catch(
-    (fail) =>
-      console.log('axios request failed!', fail)
-  )
-
 /*
   😎 STEP 2: Inspect and study the data coming back, this is YOUR
     github info! You will need to understand the structure of this
@@ -86,20 +28,6 @@ axios.get('https://api.github.com/users/antashma')
     Using that array, iterate over it, requesting data for each user, creating a new card for each
     user, and adding that card to the DOM.
 */
-
-const followersArray = [];
-
-//ADD follower names to array with forEach
-axios.get('https://api.github.com/users/Antashma/followers')
-    .then((success) => {
-        console.log('victory with followers', success)
-        const followersData = success.data
-        followersData.forEach(follower => followersArray.push(follower.login))
-      }
-    )
-    .catch((failure) => {
-        console.log('error with followers', failure)
-    })
 
 /*
   😎 STEP 3: Create a function that accepts a single object as its only argument.
@@ -130,22 +58,110 @@ axios.get('https://api.github.com/users/Antashma/followers')
     bigknell
 */
 
+axios.get('https://api.github.com/users/antashma',
+)
+  .then(
+    (success) => {
+      console.log('axios github user request successful!', success)
+      const gitUser = success.data;
+      
+      document.querySelector('.cards').appendChild(cardMaker(gitUser))
+
+      //add follower data + STRETCH
+      const followersArray = [];
+      axios.get('https://api.github.com/users/Antashma/followers')
+          .then((success) => {
+              console.log('victory with followers', success)
+              const followersData = success.data
+              const extraUsers = [ 
+                'tetondan',
+                'dustinmyers',
+                'justsml',
+                'luishrd',
+                'bigknell'
+              ]
+              followersData.forEach((follower, index) => {
+                followersArray.push(follower.login)
+              })
+              extraUsers.forEach((extra) => {
+                followersArray.push(extra)  
+              })
+              console.log('Github followers and Instructors: ', followersArray)
+              const followers_url = followersArray.map(follower => 'https://api.github.com/users/' + follower)
+              //console.log('followers url', followers_url)
+              followers_url.forEach((url, index) =>{
+                axios.get(url)
+                  .then(
+                    (success) => {
+                        console.log('retrieved follower user data!', success)
+                        const userData = success.data
+                        document.querySelector('.cards').appendChild(cardMaker(userData))
+                    }
+                  )
+                  .catch(
+                    (fail) => {
+                      console.log('failed to get follower user data', fail)
+                    }
+                  )
+              
+              })
+
+            })
+          .catch((failure) => {
+              console.log('error with followers', failure)
+          })
 
 
-//SAM NOTES
-/* SAVE FOR LATER MAYBE
 
-const extraUsers = [ 
-  'tetondan',
-  'dustinmyers',
-  'justsml',
-  'luishrd',
-  'bigknell'
-]
-extraUsers.forEach(extra => followersArray.push(extra))
-console.log(followersArray)
- */
+function cardMaker(data) {
+  // ELEMENTS
+  const cardDiv = document.createElement('div');
+  //append below to cardDiv
+  const cardImg = document.createElement('img');
+  const cardInfo = document.createElement('div')
+  //append below to cardInfo
+  const cardName = document.createElement('h3')
+  const cardUsername = document.createElement('p')
+  const cardLocation = document.createElement('p')
+  const cardProfile = document.createElement('p')
+  const cardURL = document.createElement('a') //append this to cardProfile
+  const cardFollowers = document.createElement('p')
+  const cardFollowing = document.createElement('p')
+  const cardBio = document.createElement('p')
+  
+  //APPEND
+  const cardDivChildren = [cardImg, cardInfo]
+  const cardInfoChildren = [
+    cardName, cardUsername, cardLocation, cardProfile, cardFollowers, cardFollowing, cardBio
+  ]
 
+  cardProfile.appendChild(cardURL)
+  cardInfoChildren.forEach(el => cardInfo.appendChild(el))
+  cardDivChildren.forEach(el => cardDiv.appendChild(el))
 
+  //CLASSES
+  cardDiv.classList.add('card')
+  cardInfo.classList.add('card-info')
+  cardName.classList.add('name')
+  cardUsername.classList.add('username')
 
+  //CONTENT
+  cardImg.src = data.avatar_url
+  cardUsername.textContent = data.login
+  cardName.textContent = data.cardName
+  cardLocation.textContent = data.location
+  cardURL.textContent = data.html_url
+  cardURL.href = data.html_url
+  cardFollowers.textContent = data.followers + ' followers'
+  cardFollowing.textContent = data.following + ' following'
+  cardBio.textContent = data.bio
+
+  return cardDiv;
+}
+
+}) //github user THEN
+.catch( //githubuser CATCH
+  (fail) =>
+    console.log('axios request failed!', fail)
+)
 
