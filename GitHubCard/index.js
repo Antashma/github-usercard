@@ -8,9 +8,8 @@ import axios from 'axios';
 axios.get('https://api.github.com/users/antashma')
   .then(
     (success) => {
-      console.log('axios request successful!', success)
+      console.log('axios github user request successful!', success)
       const gitUser = success.data;
-      //document.querySelector('.card').appendChild(cardMaker(gitUser));
       function cardMaker(data) {
         // ELEMENTS
         const cardDiv = document.createElement('div');
@@ -65,15 +64,15 @@ axios.get('https://api.github.com/users/antashma')
   )
 
 /*
-  STEP 2: Inspect and study the data coming back, this is YOUR
+  😎 STEP 2: Inspect and study the data coming back, this is YOUR
     github info! You will need to understand the structure of this
-    data in order to use it to build your component function
+    data in order to use it to build your component function ✔
 
     Skip to STEP 3.
 */
 
 /*
-  STEP 4: Pass the data received from Github into your function,
+  😎 STEP 4: Pass the data received from Github into your function,
     and append the returned markup to the DOM as a child of .cards
 */
 
@@ -90,8 +89,20 @@ axios.get('https://api.github.com/users/antashma')
 
 const followersArray = [];
 
+//ADD follower names to array with forEach
+axios.get('https://api.github.com/users/Antashma/followers')
+    .then((success) => {
+        console.log('victory with followers', success)
+        const followersData = success.data
+        followersData.forEach(follower => followersArray.push(follower.login))
+      }
+    )
+    .catch((failure) => {
+        console.log('error with followers', failure)
+    })
+
 /*
-  STEP 3: Create a function that accepts a single object as its only argument.
+  😎 STEP 3: Create a function that accepts a single object as its only argument.
     Using DOM methods and properties, create and return the following markup:
 
     <div class="card">
@@ -118,6 +129,23 @@ const followersArray = [];
     luishrd
     bigknell
 */
+
+
+
+//SAM NOTES
+/* SAVE FOR LATER MAYBE
+
+const extraUsers = [ 
+  'tetondan',
+  'dustinmyers',
+  'justsml',
+  'luishrd',
+  'bigknell'
+]
+extraUsers.forEach(extra => followersArray.push(extra))
+console.log(followersArray)
+ */
+
 
 
 
