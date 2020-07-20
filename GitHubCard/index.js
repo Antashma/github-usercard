@@ -50,8 +50,10 @@ axios.get('https://api.github.com/users/antashma')
         cardLocation.textContent = data.location
         cardURL.textContent = data.html_url
         cardURL.href = data.html_url
-        //cardFollowers.textContent =
-        
+        cardFollowers.textContent = data.followers + ' followers'
+        cardFollowing.textContent = data.following + ' following'
+        cardBio.textContent = data.bio
+
         return cardDiv;
       }
       document.querySelector('.cards').appendChild(cardMaker(gitUser))
