@@ -7,12 +7,59 @@ import axios from 'axios';
 
 axios.get('https://api.github.com/users/antashma')
   .then(
-    (success) =>
-    console.log('axios request sucessful!', success)
-  )
+    (success) => {
+      console.log('axios request successful!', success)
+      const gitUser = success.data;
+      //document.querySelector('.card').appendChild(cardMaker(gitUser));
+      function cardMaker(data) {
+        // ELEMENTS
+        const cardDiv = document.createElement('div');
+        //append below to cardDiv
+        const cardImg = document.createElement('img');
+        const cardInfo = document.createElement('div')
+        //append below to cardInfo
+        const cardName = document.createElement('h3')
+        const cardUsername = document.createElement('p')
+        const cardLocation = document.createElement('p')
+        const cardProfile = document.createElement('p')
+        const cardURL = document.createElement('a') //append this to cardProfile
+        const cardFollowers = document.createElement('p')
+        const cardFollowing = document.createElement('p')
+        const cardBio = document.createElement('p')
+        
+        //APPEND
+        const cardDivChildren = [cardImg, cardInfo]
+        const cardInfoChildren = [
+          cardName, cardUsername, cardLocation, cardProfile, cardFollowers, cardFollowing, cardBio
+        ]
+
+        cardProfile.appendChild(cardURL)
+        cardInfoChildren.forEach(el => cardInfo.appendChild(el))
+        cardDivChildren.forEach(el => cardDiv.appendChild(el))
+
+        //CLASSES
+        cardDiv.classList.add('card')
+        cardInfo.classList.add('card-info')
+        cardName.classList.add('name')
+        cardUsername.classList.add('username')
+      
+        //CONTENT
+        cardImg.src = data.avatar_url
+        cardUsername.textContent = data.login
+        cardName.textContent = data.cardName
+        cardLocation.textContent = data.location
+        cardURL.textContent = data.html_url
+        cardURL.href = data.html_url
+        //cardFollowers.textContent =
+        
+        return cardDiv;
+      }
+      document.querySelector('.cards').appendChild(cardMaker(gitUser))
+      
+    })
   .catch(
     (fail) =>
-    console.log('axios request failed!', fail)
+      console.log('axios request failed!', fail)
   )
 
 /*
@@ -69,3 +116,6 @@ const followersArray = [];
     luishrd
     bigknell
 */
+
+
+
